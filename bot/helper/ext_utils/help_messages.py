@@ -158,7 +158,6 @@ class HelpString:
             f'/{BotCommands.FastDlCommand}: Get fast download from link and magnet.',
             f'/{BotCommands.WayBackCommand}: Archive a webpage with wayback machine.',
             f'/{BotCommands.UserThumbCommand[0]}: Set thumbnail via reply or URL.',
-            f'/{BotCommands.PosterCommand[0]}: Search Poster From OTT or TMDB.',
             f'/{BotCommands.MyPlanCommand}: To Check Your Premium Plan',
             f'/{BotCommands.IdCommand}: Get user/chat/forwarded ID.']
     
