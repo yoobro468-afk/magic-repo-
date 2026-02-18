@@ -72,9 +72,6 @@ async def get_user_settings(from_user, data: str, uset_data: str):
         thumbmsg, buttonkey = ('EXISTS ✅️', '✅️ Thumbnail') if await aiopath.exists(thumbpath) else ('NOT SET', 'Thumbnail')
         buttons.button_data(buttonkey, f'userset {user_id} setdata thumb')
 
-        autothumb = user_dict.get('autothumb')
-        buttons.button_data('✅️ Auto Thumbnail' if autothumb else 'Auto Thumbnail', f'userset {user_id} autothumb_menu')
-
         attach = user_dict.get('attachment')
         if attach and (attach.startswith('http') or await aiopath.exists(attach)):
             attachmsg, buttonkey = 'EXISTS ✅️', '✅️ Attachment'
@@ -148,7 +145,6 @@ async def get_user_settings(from_user, data: str, uset_data: str):
                 f'<b>┃ </b>As Group: <b>{mediagroup}</b>\n'
                 f'<b>┃ </b>Thumbnail: <b>{thumbmsg}</b>\n'
                 f'<b>┃ </b>Attachment: <b>{attachmsg}</b>\n'
-                f'<b>┃ </b>Auto Thumbnail: <b>{autothumb}</b>\n'
                 f'<b>┃ </b>DM Mode: <b>{sendpm}</b>\n'
                 f'<b>┃ </b>SS Mode: <b>{sendss}</b>\n'
                 f'<b>┃ </b>RClone: <b>{rccmsg}</b>\n'
@@ -329,19 +325,6 @@ async def get_user_settings(from_user, data: str, uset_data: str):
         text = text.replace('Timeout: 60s.', '')
         if uset_data not in ['setcap', 'index_url', 'token_pickle', 'gdrive_id', 'rclone_path', 'rclone_config']:
             buttons.button_data('Back', f'userset {user_id} back')
-
-    elif data == 'autothumb_menu':
-        autothumb = user_dict.get('autothumb')
-        buttons.button_data('✅️ Auto Thumbnail' if autothumb else 'Auto Thumbnail', f'userset {user_id} autothumb')
-        if autothumb:
-            choose_poster = user_dict.get('choose_poster')
-            buttons.button_data('✅️ Choose Poster' if choose_poster else 'Choose Poster', f'userset {user_id} choose_poster')
-        buttons.button_data('Back', f'userset {user_id} back')
-        text = '<b>AUTO THUMBNAIL SETTINGS</b>\n'
-        text += f'<b>┎ Auto Thumbnail:</b> {"ENABLE" if autothumb else "DISABLE"}\n'
-        if autothumb:
-            text += f'<b>┖ Choose Poster:</b> {"ENABLE" if user_dict.get("choose_poster") else "DISABLE"}'
-        image = config_dict['IMAGE_USETIINGS']
 
     elif data == 'prepare':
         msg_thumb = 'Send a photo to to change current thumbnail.\n\n<i>Timeout: 60s.</i>' if await aiopath.exists(thumbpath) else \
@@ -532,10 +515,8 @@ async def edit_user_settings(client: Client, query: CallbackQuery):
             else:
                 await update_user_ldata(user_id, value[4:], '')
             await gather(query.answer(), update_user_settings(query, qdata, uset_data))
-        case 'enable_pm' | 'enable_ss' | 'as_doc' | 'media_group' | 'fnamecap' | 'stop_duplicate' | 'use_sa' | 'autothumb' | 'choose_poster' as value:
+        case 'enable_pm' | 'enable_ss' | 'as_doc' | 'media_group' | 'fnamecap' | 'stop_duplicate' | 'use_sa' as value:
             qdata = uset_data = ''
-            if value in ('autothumb', 'choose_poster'):
-                qdata = 'autothumb_menu'
             default = config_dict['ENABLE_PM'] if value == 'enable_pm' else False
             await update_user_ldata(user_id, value, not user_dict.get(value, default))
             if value == 'fnamecap':
@@ -543,7 +524,7 @@ async def edit_user_settings(client: Client, query: CallbackQuery):
             if value in ('stop_duplicate', 'use_sa'):
                 qdata = 'gdtool'
             await gather(query.answer(), update_user_settings(query, qdata, uset_data))
-        case 'capmode' | 'gdtool' | 'rctool' | 'autothumb_menu' as value:
+        case 'capmode' | 'gdtool' | 'rctool' as value:
             await gather(query.answer(), update_user_settings(query, value))
         case 'zipmode':
             try:
