@@ -811,19 +811,44 @@ else:
         if v in ['', '*']:
             del qb_opt[k]
     qb_client.app_set_preferences(qb_opt)
-
 LOGGER.info('Creating client Pyrofork V%s...', __version__)
-kwargs = {'workers': 1000,  'parse_mode': ParseMode.HTML}
-if int(__version__.replace('.', '')[:3]) > 221:
-    kwargs.update({'max_concurrent_transmissions': 1000})
-bot: tgClient = tgClient('bot', TELEGRAM_API, TELEGRAM_HASH, bot_token=BOT_TOKEN, **kwargs).start()
+
+kwargs = {'workers': 1000, 'parse_mode': ParseMode.HTML}
+
+# FIX: Safe version check (int crash avoid cheyyadaniki)
+try:
+    if int(__version__.replace('.', '')[:3]) > 221:
+        kwargs['max_concurrent_transmissions'] = 1000
+except Exception:
+    pass
+
+# FIX: .start() separate ga call chestham (loop issues avoid cheyyadaniki)
+bot: tgClient = tgClient(
+    'bot',
+    TELEGRAM_API,
+    TELEGRAM_HASH,
+    bot_token=BOT_TOKEN,
+    **kwargs
+)
+
+bot.start()
 
 bot_loop = bot.loop
-bot_name = bot.me.username
-scheduler = AsyncIOScheduler(timezone=str(get_localzone()), event_loop=bot_loop)
+
+# FIX: bot.me sometimes None avvachu
+try:
+    bot_name = bot.me.username
+except Exception:
+    bot_name = None
+
+scheduler = AsyncIOScheduler(
+    timezone=str(get_localzone()),
+    event_loop=bot_loop
+)
 
 if not aria2_options:
     aria2_options = aria2.client.get_global_option()
 else:
-    a2c_glo = {op: aria2_options[op] for op in aria2c_global if op in aria2_options}
+    # FIX: KeyError avoid cheyyadaniki .get use chesa
+    a2c_glo = {op: aria2_options.get(op) for op in aria2c_global if op in aria2_options}
     aria2.set_global_options(a2c_glo)
