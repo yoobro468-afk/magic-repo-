@@ -62,6 +62,12 @@ class _BotCommands:
         self.MyPlanCommand = f'myplan{CMD_SUFFIX}'
         self.IdCommand = f'id{CMD_SUFFIX}'
         self.LeaveCommand = f'leave{CMD_SUFFIX}'
+        self.FreeTokenCommand = f'freetoken{CMD_SUFFIX}'
+        self.RemoveTokenCommand = f'removetoken{CMD_SUFFIX}'
+        self.FreeTokenListCommand = f'freetokenlist{CMD_SUFFIX}'
+        self.SetLimitCommand = f'setlimit{CMD_SUFFIX}'
+        self.ResetLimitCommand = f'resetlimit{CMD_SUFFIX}'
+        self.LimitedUsersCommand = f'limitedusers{CMD_SUFFIX}'
 
 
 
