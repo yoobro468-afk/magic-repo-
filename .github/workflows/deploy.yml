@@ -35,12 +35,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Delete unnecessary directories and files
         run: |
-          # Directories to delete
           for dir in bot qBittorrent docs web; do
             if [ -d "./$dir" ]; then
               echo "Deleting directory: $dir"
@@ -50,7 +52,6 @@ jobs:
             fi
           done
 
-          # Delete aria.sh if it exists
           if [ -f "./aria.sh" ]; then
             echo "Deleting file: aria.sh"
             rm -f ./aria.sh
