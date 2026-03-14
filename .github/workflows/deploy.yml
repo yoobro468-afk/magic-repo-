@@ -36,10 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Convert shallow repo to full repo
+        run: git fetch --prune --unshallow || true
 
       - name: Delete unnecessary directories and files
         run: |
