@@ -1,1 +1,3 @@
-python3 update.py && python3 bot.py
+#!/bin/bash
+python3 update.py
+python3 -m bot
